@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:6
+    restart: always
+    ports:
+      - '6379:6379'
+
+  publisher-1:
+    build: publisher
+    container_name: "publisher-1"
+    depends_on:
+      - redis
+    ports:
+      - '8081:8080'
+
+  publisher-2:
+    build: publisher
+    container_name: "publisher-2"
+    depends_on:
+      - redis
+    ports:
+      - '8082:8080'
