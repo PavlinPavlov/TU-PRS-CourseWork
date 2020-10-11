@@ -1,8 +1,8 @@
 package bg.publisher.controller;
 
 import bg.publisher.model.Student;
+import bg.publisher.service.RedisPublisher;
 import bg.publisher.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +13,13 @@ import java.util.Optional;
 @RequestMapping("/students")
 public class StudentController {
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
+    private final RedisPublisher redisPublisher;
+
+    public StudentController(StudentService studentService, RedisPublisher redisPublisher) {
+        this.studentService = studentService;
+        this.redisPublisher = redisPublisher;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudent(@PathVariable("id") String id) {
@@ -27,7 +32,10 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+
         Student savedStudent = studentService.saveStudentDTO(student);
+
+        redisPublisher.broadcast(savedStudent.getId());
 
         return ResponseEntity.ok(savedStudent);
     }
