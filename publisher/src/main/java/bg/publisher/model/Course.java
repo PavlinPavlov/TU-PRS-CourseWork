@@ -57,4 +57,14 @@ public class Course {
     public void setExerciseDescriptions(List<String> exerciseDescriptions) {
         this.exerciseDescriptions = exerciseDescriptions;
     }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "name='" + name + '\'' +
+                ", credits=" + credits +
+                ", examDate=" + examDate +
+                ", exerciseDescriptions=" + exerciseDescriptions +
+                '}';
+    }
 }
